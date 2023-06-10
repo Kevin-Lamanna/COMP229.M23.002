@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/Kevin-Lamanna/COMP229.M23.002/issues"
   },
-  "homepage": "https://github.com/Kevin-Lamanna/COMP229.M23.002#readme"
+  "homepage": "https://github.com/Kevin-Lamanna/COMP229.M23.002#readme",
+  "engines": {
+    "node": "18.16.0"
+  }
 }
