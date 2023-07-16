@@ -1,9 +1,15 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+const JWTStrategy = require('passport-jwt').Strategy;
 const UserModel = require('../models/user');
 
+let config = require('./config');
+
 module.exports = () => {
-    passport.use(new LocalStrategy(async (username, password, done) => {
+    passport.use(
+        'local', 
+        new LocalStrategy(async (username, password, done) => {
 
         try {
             console.log("====> LocalStrategy")
@@ -31,4 +37,23 @@ module.exports = () => {
             return done(error);
         }
     }));
+
+    passport.use(
+        'tokencheck',
+        new JWTStrategy(
+            {
+                secretOrKey: config.SECRETKEY,
+                jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
+            },
+            async (token, done) => {
+                try {
+                    console.log(token);
+                    return done(null, token.payload);
+                } catch (error) {
+                    console.log(error);
+                    done(error);
+                }
+            }
+        )
+    );
 };
