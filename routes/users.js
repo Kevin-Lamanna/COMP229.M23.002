@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 let usersController = require('../controllers/user');
 
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('responds from root of the Users router');
@@ -9,6 +10,8 @@ router.get('/', function(req, res, next) {
 
 // router.get('/signin', usersController.renderSignin);
 router.post('/signin', usersController.signin);
+
+router.get('/me', usersController.requireAuth, usersController.myprofile);
 
 // router.get('/signup', usersController.renderSignup);
 router.post('/signup', usersController.signup);

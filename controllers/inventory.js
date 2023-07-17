@@ -46,7 +46,7 @@ module.exports.processAddPage = async (req, res, next) => {
                 w: req.body.size.w,
                 uom: req.body.size.uom,
             },
-            tags: req.body.tags.split(",").map(word => word.trim())
+            tags: (req.body.tags == null || req.body.tags  == "") ? "": req.body.tags.split(",").map(word => word.trim()),
         });
 
         let result = await InventoryModel.create(newProduct)
@@ -99,7 +99,8 @@ module.exports.processEditPage = async (req, res, next) => {
                 w: req.body.size.w,
                 uom: req.body.size.uom,
             },
-            tags: req.body.tags.split(",").map(word => word.trim())
+            tags: (req.body.tags == null || req.body.tags  == "") ? "": req.body.tags.split(",").map(word => word.trim()),
+            owner: (req.body.owner == null || req.body.owner == "") ? req.body.id : req.body.owner
         });
 
         // Submits updatedProduct to the DB and waits for a result.

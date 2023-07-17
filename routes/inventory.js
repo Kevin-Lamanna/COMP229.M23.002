@@ -21,10 +21,10 @@ router.get('/list', inventoryController.invetoryList);
 
 // Routers for edit
 // router.get('/edit/:id',  inventoryController.displayEditPage);
-router.put('/edit/:id', usersController.requireAuth, inventoryController.processEditPage);
+router.put('/edit/:id', usersController.requireAuth, usersController.isAllowed, inventoryController.processEditPage);
 
 // Delete
-router.delete('/delete/:id', usersController.requireAuth, inventoryController.performDelete);
+router.delete('/delete/:id', usersController.requireAuth, usersController.isAllowed, inventoryController.performDelete);
 
 
 /* GET Route for displaying the Add page - CREATE Operation */

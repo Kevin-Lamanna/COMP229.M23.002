@@ -36,7 +36,7 @@ module.exports.requireAuth = function(req, res, next)
         message: getErrorMessage(err)
       }
     ); 
-    if (info) return res.staus(401).json(
+    if (info) return res.status(401).json(
       {
         sucess: false,
         message: info.message
@@ -45,6 +45,37 @@ module.exports.requireAuth = function(req, res, next)
     req.payload = payload;
     next();
   })(req, res, next);
+}
+
+// Validates the owner of the item
+exports.isAllowed = async function (req, res, next){
+
+  try {
+    let id = req.params.id
+    let inventoryItem = await Inventory.findById(id).populate('owner');
+
+    // If there is no item found
+    if(inventoryItem == null){
+      throw new Error('Item not found.') // Express will catch this on its own.
+    }
+    else
+    {
+      if(inventoryItem.owner._id != req.payload.id){
+        let currentUser = await UserModel.findOne({_id: req.payload.id}, 'admin');
+        if(currentUser.admin == false){
+          console.log("====> Not authorized");
+          return res.status(403).json(
+            {
+              success: false,
+              message: getErrorMessage(err)
+            }
+          );
+        }
+      }
+    }
+  } catch (error) {
+    
+  }
 }
 
 // module.exports.renderSignin = function (req, res, next) {
@@ -114,6 +145,24 @@ module.exports.signin = function (req, res, next) {
 
     // delete req.session.url;
   }
+
+exports.myprofile = async function(req, res, next){
+  try {
+    let id = req.payload.id;
+    let me = await User.findById(id).select('firstName lastName email username admin created');
+
+    res.status(200).json(me);
+
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(
+      {
+        success: false,
+        message: getErrorMessage(error)
+      }
+    );
+  }
+}
 
 // module.exports.renderSignup = function (req, res, next) {
 //     if (!req.user) {
@@ -188,3 +237,4 @@ module.exports.signup = async (req, res, next) => {
   //     res.redirect('/');
   //   });
   // };
+
